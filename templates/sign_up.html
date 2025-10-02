@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* Using CSS variables for an easy-to-manage color scheme */
+        
         :root {
             --primary-color: #4a6cf7;
             --primary-hover: #294ee4;
@@ -25,7 +25,7 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif; /* A modern, clean font */
+            font-family: 'Poppins', sans-serif;
             background: var(--background-color);
             display: flex;
             justify-content: center;
@@ -137,12 +137,6 @@
             <h2>Create Your Account</h2>
             <p>Join Remote Hunter to find your next opportunity.</p>
         </div>
-        
-        <!-- 
-            This form is ready for JavaScript. 
-            You can select it with document.getElementById('signup-form') 
-            and add a 'submit' event listener.
-        -->
         <form id="signup-form">
             <div class="input-group">
                 <label for="fname">First Name</label>
@@ -172,7 +166,6 @@
         </div>
     </div>
 
-    <!-- You can add your <script> tag here later to handle the form submission -->
     <script>
         const supabaseUrl = 'https://gyxpqjonvgoemnkhswcq.supabase.co'; // Replace with your Supabase URL
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eHBxam9udmdvZW1ua2hzd2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MzgwNzksImV4cCI6MjA3MzAxNDA3OX0.v5jGW4XI9JxuupEYDiFKFp9dcSH24CPGomw9RGO5Fws';
