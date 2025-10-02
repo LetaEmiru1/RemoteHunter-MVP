@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Remote Hunter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- External Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary-color: #4a6cf7;
+            --primary-hover: #294ee4;
+            --text-color: #333;
+            --subtle-text: #666;
+            --background-color: #f4f7fa;
+            --container-bg: #ffffff;
+            --border-color: #dde2e7;
+            --success-color: #28a745;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-color);
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        /* --- Header/Navigation Bar --- */
+        .app-header {
+            background: var(--container-bg);
+            padding: 0 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        };
+
+        .app-header .brand {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        #logout-button {
+            background: none;
+            border: none;
+            color: var(--subtle-text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        #logout-button:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Main Content Area --- */
+        .main-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 40px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin: 0 0 5px 0;
+        }
+        
+        .dashboard-header p {
+            color: var(--subtle-text);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        /* --- STYLES FOR THE JOB KEYWORD FORM --- */
+        /* This is the white card that contains the form */
+        .preference-form-container {
+            background: var(--container-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 40px;
+        }
+        
+        .preference-form-container h2 {
+            margin-top: 0;
+            font-weight: 600;
+        }
+        
+        .preference-form-container p {
+            margin: 0 0 20px 0;
+            color: var(--subtle-text);
+        }
+
+        /* This makes the input and button line up nicely */
+        #profile-form {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Styles the text input field */
+        #job-keyword {
+            flex-grow: 1; /* Allows the input to take up all available space */
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Adds a blue glow when the input is selected */
+        #job-keyword:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+
+        /* Styles the submit button */
+        #save-button {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.2s;
+        }
+
+        /* Adds a hover effect to the button */
+        #save-button:hover {
+            background: var(--primary-hover);
+        }
+        
+        #feedback-message {
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation Bar -->
+    <header class="app-header">
+        <div class="brand">
+            Remote Hunter
+        </div>
+        <button id="logout-button">Log Out</button>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="main-container">
+        <div class="dashboard-header">
+            <h1 id="welcome-message">Welcome Back!</h1>
+            <p>Manage your job alert settings below.</p>
+        </div>
+
+        <div class="preference-form-container">
+            <h2>Your Job Alert Keyword</h2>
+            <p>Set the keyword for your daily email alerts. Leave it blank to pause notifications.</p>
+            <form id="profile-form">
+                <input type="text" id="job-keyword" name="job_keyword" placeholder="e.g., Python Developer" required>
+                <input type="submit" id="save-button" value="Save">
+            </form> 
+            <div id="feedback-message"></div>
+        </div>
+    </main>
+
+    <script>
+        
+        // --- 1. INITIALIZE CLIENT (once) ---
+        const supabaseUrl = 'https://gyxpqjonvgoemnkhswcq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eHBxam9udmdvZW1ua2hzd2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MzgwNzksImV4cCI6MjA3MzAxNDA3OX0.v5jGW4XI9JxuupEYDiFKFp9dcSH24CPGomw9RGO5Fws';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. GET DOM ELEMENTS ---
+        const welcomeMessage = document.getElementById('welcome-message');
+        const profileForm = document.getElementById('profile-form');
+        const keywordInput = document.getElementById('job-keyword');
+        const feedbackMessage = document.getElementById('feedback-message');
+        const logoutButton = document.getElementById('logout-button');
+        let currentUser = null; 
+
+        // --- 3. PAGE GUARD & DATA LOADING ---
+        const loadPage = async () => {
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+            if (error || !session) {
+                window.location.href = '/login'; // Redirect if not logged in
+                return; 
+            }
+            
+            currentUser = session.user;
+            welcomeMessage.textContent = `Welcome, ${currentUser.email}!`; // Personalize welcome message
+
+            // TODO: Fetch user's profile and populate the keywordInput.value
+            const { data:profile, error:FetchError } = await supabaseClient
+            .from('profiles')
+            .select("job_keyword")
+            .eq('user_id', currentUser.id)
+            .single(); // Assuming one profile per user
+            if(FetchError){
+                console.error("Error fetching profile:", FetchError.message);
+            } else if(profile){
+                keywordInput.value = profile.job_keyword || '';
+                console.log("Profile loaded:", profile);
+            }
+            };
+
+        // --- 4. HANDLE PROFILE UPDATE ---
+        profileForm.addEventListener('submit', async (event) => {
+            const job_keyword = keywordInput.value.trim();
+            event.preventDefault(); 
+            // TODO: Add logic to update the user's job_keyword in the database
+            const { error } = await supabaseClient
+            .from('profiles')
+            .update({job_keyword: job_keyword })
+            .eq('user_id', currentUser.id);
+            if (error) {
+                feedbackMessage.textContent = `Error saving keyword: ${error.message}`;
+                feedbackMessage.style.color = 'red';
+            } else {
+                feedbackMessage.textContent = 'Keyword saved successfully!';
+                feedbackMessage.style.color = 'var(--success-color)';
+            }
+        });
+
+        // --- 5. HANDLE LOGOUT ---
+        logoutButton.addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.href = '/login';
+        });
+
+        // --- 6. RUN THE INITIAL PAGE LOAD FUNCTION ---
+        loadPage();
+    </script>
+</body>
+</html>

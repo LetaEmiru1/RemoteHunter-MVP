@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log In | Remote Hunter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- External Google Fonts for a modern typeface -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- All styling is embedded here inside the <style> tag -->
+    <style>
+        /* Using CSS variables for an easy-to-manage color scheme */
+        :root {
+            --primary-color: #4a6cf7;
+            --primary-hover: #294ee4;
+            --text-color: #333;
+            --subtle-text: #666;
+            --background-color: #f4f7fa;
+            --container-bg: #ffffff;
+            --border-color: #dde2e7;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif; /* A modern, clean font */
+            background: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-container {
+            background: var(--container-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            color: var(--text-color);
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+
+        .form-header p {
+            color: var(--subtle-text);
+            margin: 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--subtle-text);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Adds a nice glow effect when an input is selected */
+        input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button[type="submit"]:hover {
+            background: var(--primary-hover);
+        }
+
+        button[type="submit"]:active {
+            transform: scale(0.99); /* Slight press-down effect */
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+        }
+        .signup-link p {
+            margin: 0;
+            color: var(--subtle-text);
+        }
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="form-header">
+            <h2>Log In to Your Account</h2>
+            <p>Welcome back! Please enter your details.</p>
+        </div>
+        
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" id="submit-button">Log In</button>
+        </form>
+        
+        <div class="signup-link">
+            <p>Don't have an account? <a href="/sign_up">Sign up</a></p>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://gyxpqjonvgoemnkhswcq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eHBxam9udmdvZW1ua2hzd2NxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc0MzgwNzksImV4cCI6MjA3MzAxNDA3OX0.v5jGW4XI9JxuupEYDiFKFp9dcSH24CPGomw9RGO5Fws';
+        const {createClient} = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        async function handleLogin(event){
+
+            event.preventDefault(); // Prevent the default form submission
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const {data, error} = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            })
+            if(error){
+                console.log('Error logging in:', error.message);
+                alert('Login failed: ' + error.message);
+            } else {
+                console.log('Login successful:', data);
+                alert('Login successful! Redirecting to job board...');
+                window.location.href = '/dashboard'; // Redirect to the job board or another page
+            }
+
+        }
+        const form = document.getElementById('login-form');
+        form.addEventListener('submit', handleLogin);
+    </script>
+</body>
+</html>
