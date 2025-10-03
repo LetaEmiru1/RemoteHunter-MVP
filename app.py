@@ -6,8 +6,7 @@ app = Flask(__name__)
 from flask_cors import CORS
 
 # Enable CORS for all routes
-CORS(app)
-
+CORS(app, origins=["https://remote-hunter-mvp.vercel.app"])
  
 # Define a route for the root URL
 @app.route('/')
