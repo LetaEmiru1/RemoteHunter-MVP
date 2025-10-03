@@ -19,7 +19,7 @@ supabase: Client = create_client(url, key)
 
 
 def notify_new_job(job):
-    resend.api_key = "re_TfdLLAck_9Z7bhfMYhBahzWk88yVwqrrL"
+    resend.api_key = os.environ.get("RESEND_API_KEY")
     params: resend.Emails.SendParams = {
     "from": "RemoteHunter <onboarding@resend.dev>",
     "to": [user_response.user.email],

@@ -1,4 +1,6 @@
 from flask import Flask, jsonify, render_template
+from dotenv import load_dotenv
+import os
 
 app = Flask(__name__)
 from flask_cors import CORS
@@ -37,7 +39,7 @@ from dotenv import load_dotenv
 
 #jooble api
 host = 'jooble.org'
-key = 'a62b1126-f8a5-44cf-82c3-9bf4c2c66e9b'
+key = os.environ.get("JOOBLE_KEY")
 
 
 load_dotenv()
