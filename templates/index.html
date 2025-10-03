@@ -62,7 +62,10 @@
     <script>
         const supabaseUrl = 'https://gyxpqjonvgoemnkhswcq.supabase.co';
         const supabaseKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5eHBxam9udmdvZW1ua2hzd2NxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NzQzODA3OSwiZXhwIjoyMDczMDE0MDc5fQ.8NkrVRPC_eLHvgv8C7iQ8YdVVkAjT-UKbQ3TjcL3V0I';
-
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+        
         const userNav = document.getElementById('user-navigation');
 
         const checkAuthState = async () => {
@@ -81,8 +84,6 @@
         };
 
         checkAuthState()
-        const { createClient } = supabase;
-        const supabaseClient = createClient(supabaseUrl, supabaseKey);
         console.log('Fetching jobs from the API...') 
         fetch('https://remotehunter-backend.onrender.com/api/jobs')
             .then(response => {
