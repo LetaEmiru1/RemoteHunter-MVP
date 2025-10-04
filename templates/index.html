@@ -36,8 +36,8 @@
             <a class="navbar-brand fw-bold text-primary" href="/">Remote Hunter</a>
             <div class="d-flex" id="user-navigation">
                 <!-- This content will be replaced by JavaScript -->
-                <a href="/login" class="btn btn-outline-primary me-2">Log In</a>
-                <a href="/signup" class="btn btn-primary">Sign Up</a>
+                <a href="templates/login" class="btn btn-outline-primary me-2">Log In</a>
+                <a href="templates/signup" class="btn btn-primary">Sign Up</a>
             </div>
         </div>
     </nav> 
@@ -103,8 +103,6 @@
                 }
 
                 data.forEach(job => {
-                    // This is the only part that's changed: the HTML *string* we generate.
-                    // The logic of creating and appending an element for each job is identical.
                     const jobColumn = document.createElement('div');
                     jobColumn.className = 'col-lg-4 col-md-6 col-sm-12'; // This makes the grid responsive
 
