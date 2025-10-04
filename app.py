@@ -13,7 +13,7 @@ CORS(app, origins=["https://remote-hunter-mvp.vercel.app"])
 def hello_world():
     return 'Hello, World!'
 
-@app.route('/login')
+@app.route('templates/login')
 def login():
     return render_template('login.html')
 
@@ -21,7 +21,7 @@ def login():
 def index():
     return render_template('index.html')
 
-@app.route('/sign_up')
+@app.route('templates/sign_up')
 def sign_up():
     return render_template('sign_up.html')
 
