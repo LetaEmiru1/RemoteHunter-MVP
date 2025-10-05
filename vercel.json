@@ -6,7 +6,7 @@
     },
     {
       "source": "/signup",
-      "destination": "/signup.html"
+      "destination": "/sign_up.html"
     },
     {
       "source": "/dashboard",
